@@ -15,7 +15,7 @@ interface LanguageSelectorProps {
 
 const LanguageSelector: React.FC<LanguageSelectorProps> = ({ onLanguageSelect }) => {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} testID="language-selector-container">
       <View style={styles.content}>
         <View style={styles.logoContainer}>
           <Text style={styles.logoText}>🗺️</Text>
@@ -30,6 +30,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({ onLanguageSelect })
             style={styles.languageButton}
             onPress={() => onLanguageSelect('en')}
             activeOpacity={0.8}
+            testID="language-button-en"
           >
             <Text style={styles.flagEmoji}>🇺🇸</Text>
             <Text style={styles.languageText}>English</Text>
@@ -39,6 +40,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({ onLanguageSelect })
             style={styles.languageButton}
             onPress={() => onLanguageSelect('ja')}
             activeOpacity={0.8}
+            testID="language-button-ja"
           >
             <Text style={styles.flagEmoji}>🇯🇵</Text>
             <Text style={styles.languageText}>日本語</Text>
