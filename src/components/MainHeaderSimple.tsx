@@ -2,7 +2,7 @@ import React from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
 } from 'react-native';
 import { Colors } from '@/constants';
@@ -26,23 +26,27 @@ const MainHeader: React.FC<MainHeaderProps> = ({
       <Text style={styles.title}>{t('nearbySpots', language)}</Text>
       
       <View style={styles.actions}>
-        <TouchableOpacity
-          style={styles.iconButton}
+        <Pressable
+          style={({ pressed }) => [
+            styles.iconButton,
+            pressed && styles.iconButtonPressed,
+          ]}
           onPress={onToggleView}
-          activeOpacity={0.7}
         >
           <Text style={styles.buttonText}>
             {isMapView ? '📋' : '🗺️'}
           </Text>
-        </TouchableOpacity>
+        </Pressable>
         
-        <TouchableOpacity
-          style={styles.iconButton}
+        <Pressable
+          style={({ pressed }) => [
+            styles.iconButton,
+            pressed && styles.iconButtonPressed,
+          ]}
           onPress={onShowLanguageSelector}
-          activeOpacity={0.7}
         >
           <Text style={styles.buttonText}>🌐</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </View>
   );
@@ -78,6 +82,10 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 20,
+  },
+  iconButtonPressed: {
+    opacity: 0.7,
+    transform: [{ scale: 0.95 }],
   },
 });
 

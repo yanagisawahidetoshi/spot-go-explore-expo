@@ -4,7 +4,7 @@ import {
   Text,
   ScrollView,
   Image,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
   ActivityIndicator,
   Linking,
@@ -136,12 +136,15 @@ const SpotDetails = () => {
             style={styles.headerImage}
             resizeMode="cover"
           />
-          <TouchableOpacity 
-            style={styles.backButton} 
+          <Pressable 
+            style={({ pressed }) => [
+              styles.backButton,
+              pressed && styles.backButtonPressed,
+            ]} 
             onPress={() => navigation.goBack()}
           >
             <Text style={styles.backButtonText}>←</Text>
-          </TouchableOpacity>
+          </Pressable>
           
           {/* スポット名オーバーレイ */}
           <View style={styles.titleOverlay}>
@@ -155,8 +158,12 @@ const SpotDetails = () => {
 
         {/* Audio Controls */}
         <View style={styles.audioControls}>
-          <TouchableOpacity 
-            style={[styles.audioButton, isSpeaking && styles.audioButtonActive]}
+          <Pressable 
+            style={({ pressed }) => [
+              styles.audioButton,
+              isSpeaking && styles.audioButtonActive,
+              pressed && styles.audioButtonPressed,
+            ]}
             onPress={toggleSpeech}
           >
             <Text style={styles.audioIcon}>{isSpeaking ? '⏸' : '▶️'}</Text>
@@ -166,14 +173,17 @@ const SpotDetails = () => {
                 (language === 'ja' ? '歴史を聞く' : 'Listen to History')
               }
             </Text>
-          </TouchableOpacity>
+          </Pressable>
           
-          <TouchableOpacity 
-            style={styles.speedButton}
+          <Pressable 
+            style={({ pressed }) => [
+              styles.speedButton,
+              pressed && styles.speedButtonPressed,
+            ]}
             onPress={changeSpeechRate}
           >
             <Text style={styles.speedText}>{speechRate}x</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
 
         {/* Content */}
@@ -200,34 +210,44 @@ const SpotDetails = () => {
 
           {/* Action Buttons */}
           <View style={styles.actionButtons}>
-            <TouchableOpacity 
-              style={[styles.actionButton, styles.primaryButton]}
+            <Pressable 
+              style={({ pressed }) => [
+                styles.actionButton,
+                styles.primaryButton,
+                pressed && styles.actionButtonPressed,
+              ]}
               onPress={handleGetDirections}
             >
               <Text style={styles.actionIcon}>🗺</Text>
               <Text style={styles.buttonTextPrimary}>
                 {t('directions', language)}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
             
             {spot.phone && (
-              <TouchableOpacity 
-                style={styles.actionButton}
+              <Pressable 
+                style={({ pressed }) => [
+                  styles.actionButton,
+                  pressed && styles.actionButtonPressed,
+                ]}
                 onPress={handleCall}
               >
                 <Text style={styles.actionIcon}>📞</Text>
                 <Text style={styles.buttonText}>{t('call', language)}</Text>
-              </TouchableOpacity>
+              </Pressable>
             )}
             
             {spot.website && (
-              <TouchableOpacity 
-                style={styles.actionButton}
+              <Pressable 
+                style={({ pressed }) => [
+                  styles.actionButton,
+                  pressed && styles.actionButtonPressed,
+                ]}
                 onPress={handleVisitWebsite}
               >
                 <Text style={styles.actionIcon}>🌐</Text>
                 <Text style={styles.buttonText}>{t('visitWebsite', language)}</Text>
-              </TouchableOpacity>
+              </Pressable>
             )}
           </View>
 
@@ -513,6 +533,22 @@ const styles = StyleSheet.create({
     height: 150,
     marginRight: 12,
     borderRadius: 8,
+  },
+  backButtonPressed: {
+    opacity: 0.7,
+    transform: [{ scale: 0.95 }],
+  },
+  audioButtonPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.95 }],
+  },
+  speedButtonPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.95 }],
+  },
+  actionButtonPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.98 }],
   },
 });
 

@@ -4,7 +4,7 @@ import {
   Text,
   StyleSheet,
   ActivityIndicator,
-  TouchableOpacity,
+  Pressable,
 } from 'react-native';
 import MapView, { Marker, Region } from 'react-native-maps'; // PROVIDER_GOOGLEを削除
 
@@ -103,13 +103,15 @@ const SpotMapView: React.FC<MapViewProps> = ({
         ))}
       </MapView>
 
-      <TouchableOpacity
-        style={styles.centerButton}
+      <Pressable
+        style={({ pressed }) => [
+          styles.centerButton,
+          pressed && styles.centerButtonPressed,
+        ]}
         onPress={centerOnUser}
-        activeOpacity={0.8}
       >
         <Text style={styles.centerIcon}>📍</Text>
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 };
@@ -165,6 +167,10 @@ const styles = StyleSheet.create({
   },
   centerIcon: {
     fontSize: 24,
+  },
+  centerButtonPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.95 }],
   },
 });
 

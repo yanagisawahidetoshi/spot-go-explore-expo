@@ -2,7 +2,7 @@ import React from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
   Image,
 } from 'react-native';
@@ -26,25 +26,29 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({ onLanguageSelect })
         <Text style={styles.subtitle}>言語を選択してください</Text>
         
         <View style={styles.languageButtons}>
-          <TouchableOpacity
-            style={styles.languageButton}
+          <Pressable
+            style={({ pressed }) => [
+              styles.languageButton,
+              pressed && styles.languageButtonPressed,
+            ]}
             onPress={() => onLanguageSelect('en')}
-            activeOpacity={0.8}
             testID="language-button-en"
           >
             <Text style={styles.flagEmoji}>🇺🇸</Text>
             <Text style={styles.languageText}>English</Text>
-          </TouchableOpacity>
+          </Pressable>
           
-          <TouchableOpacity
-            style={styles.languageButton}
+          <Pressable
+            style={({ pressed }) => [
+              styles.languageButton,
+              pressed && styles.languageButtonPressed,
+            ]}
             onPress={() => onLanguageSelect('ja')}
-            activeOpacity={0.8}
             testID="language-button-ja"
           >
             <Text style={styles.flagEmoji}>🇯🇵</Text>
             <Text style={styles.languageText}>日本語</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
     </SafeAreaView>
@@ -114,6 +118,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '600',
     color: Colors.text.primary,
+  },
+  languageButtonPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.98 }],
   },
 });
 

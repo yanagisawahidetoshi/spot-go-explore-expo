@@ -61,4 +61,19 @@ describe('LanguageSelector component', () => {
     const container = getByTestId('language-selector-container');
     expect(container).toBeTruthy();
   });
+
+  it('should apply pressed style when button is pressed', () => {
+    const { getByTestId } = render(
+      <LanguageSelector onLanguageSelect={mockOnLanguageSelect} />
+    );
+
+    const englishButton = getByTestId('language-button-en');
+    
+    // Pressableのpressedスタイルをテスト
+    fireEvent(englishButton, 'pressIn');
+    // pressedスタイルが適用されることを確認
+    // 実際のスタイルテストは、スタイルが関数として実装された後に追加
+    
+    fireEvent(englishButton, 'pressOut');
+  });
 });

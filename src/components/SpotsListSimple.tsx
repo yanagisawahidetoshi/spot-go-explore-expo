@@ -3,7 +3,7 @@ import {
   View,
   Text,
   FlatList,
-  TouchableOpacity,
+  Pressable,
   Image,
   StyleSheet,
   ActivityIndicator,
@@ -50,10 +50,12 @@ const SpotsList: React.FC<SpotsListProps> = ({
     const description = language === 'ja' ? item.descriptionJa : item.description;
     
     return (
-      <TouchableOpacity
-        style={styles.spotCard}
+      <Pressable
+        style={({ pressed }) => [
+          styles.spotCard,
+          pressed && styles.spotCardPressed,
+        ]}
         onPress={() => onSpotSelect(item)}
-        activeOpacity={0.8}
       >
         <Image
           source={{ uri: item.images[0] }}
@@ -99,7 +101,7 @@ const SpotsList: React.FC<SpotsListProps> = ({
             )}
           </View>
         </View>
-      </TouchableOpacity>
+      </Pressable>
     );
   };
 
@@ -140,11 +142,12 @@ const SpotsList: React.FC<SpotsListProps> = ({
         </Text>
         <View style={styles.radiusOptions}>
           {RADIUS_OPTIONS.map((option) => (
-            <TouchableOpacity
+            <Pressable
               key={option.value}
-              style={[
+              style={({ pressed }) => [
                 styles.radiusButton,
                 selectedRadius === option.value && styles.radiusButtonActive,
+                pressed && styles.radiusButtonPressed,
               ]}
               onPress={() => onRadiusChange(option.value)}
             >
@@ -156,7 +159,7 @@ const SpotsList: React.FC<SpotsListProps> = ({
               >
                 {option.label}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           ))}
         </View>
       </View>
@@ -327,6 +330,13 @@ const styles = StyleSheet.create({
   radiusButtonTextActive: {
     color: 'white',
     fontWeight: '600',
+  },
+  spotCardPressed: {
+    opacity: 0.9,
+    transform: [{ scale: 0.98 }],
+  },
+  radiusButtonPressed: {
+    opacity: 0.8,
   },
 });
 

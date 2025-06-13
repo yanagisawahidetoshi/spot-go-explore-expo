@@ -108,6 +108,27 @@ EXPO_PUBLIC_GOOGLE_MAPS_API_KEY=your_api_key_here
 4. コードをリファクタリングする（Refactor）
 5. すべての新規コード・修正には対応するテストが必須
 
+### UIコンポーネントのルール
+
+**Pressableを使用すること**
+
+- TouchableOpacityは使用禁止
+- すべてのタップ可能な要素はPressableを使用
+- pressedスタイルを必ず実装し、ユーザーフィードバックを提供
+
+例：
+```tsx
+<Pressable
+  style={({ pressed }) => [
+    styles.button,
+    pressed && styles.buttonPressed,
+  ]}
+  onPress={handlePress}
+>
+  <Text>Button</Text>
+</Pressable>
+```
+
 ## 実行方法
 
 ```bash

@@ -2,7 +2,7 @@ import React from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   Modal,
   StyleSheet,
 } from 'react-native';
@@ -35,13 +35,15 @@ const PermissionModal: React.FC<PermissionModalProps> = ({
             {t('locationPermissionDesc', language)}
           </Text>
           
-          <TouchableOpacity
-            style={styles.button}
+          <Pressable
+            style={({ pressed }) => [
+              styles.button,
+              pressed && styles.buttonPressed,
+            ]}
             onPress={onRequestPermission}
-            activeOpacity={0.8}
           >
             <Text style={styles.buttonText}>{t('enable', language)}</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
     </Modal>
@@ -101,6 +103,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  buttonPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.98 }],
   },
 });
 
