@@ -5,9 +5,9 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import MapView from '@/components/MapView';
-import MainHeader from '@/components/MainHeader';
-import PermissionModal from '@/components/PermissionModal';
-import SpotsList from '@/components/SpotsList';
+import MainHeader from '@/components/MainHeaderSimple'; // 一時的にシンプル版を使用
+import PermissionModal from '@/components/PermissionModalSimple'; // 一時的にシンプル版を使用
+import SpotsList from '@/components/SpotsListSimple'; // 一時的にシンプル版を使用
 import WelcomeScreen from '@/components/WelcomeScreen';
 import LanguageSelector from '@/components/LanguageSelector';
 
