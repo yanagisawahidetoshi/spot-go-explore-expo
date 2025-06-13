@@ -1,7 +1,7 @@
 export const translations = {
   en: {
     welcome: 'Welcome to',
-    appName: 'Spot Go Explore',
+    appName: 'GO! SPOT',
     selectLanguage: 'Select Your Language',
     continue: 'Continue',
     locationPermission: 'Enable Location',
@@ -9,7 +9,7 @@ export const translations = {
     enable: 'Enable Location',
     mapView: 'Map',
     listView: 'List',
-    nearbySpots: 'Nearby Spots',
+    nearbySpots: 'GO! SPOT',
     loading: 'Loading...',
     noSpotsFound: 'No spots found nearby',
     details: 'Details',
@@ -28,6 +28,11 @@ export const translations = {
     close: 'Close',
     search: 'Search',
     filter: 'Filter',
+    address: 'Address',
+    error: 'Error',
+    cannotOpenMaps: 'Cannot open maps',
+    cannotMakeCall: 'Cannot make call',
+    cannotOpenWebsite: 'Cannot open website',
     categories: {
       attraction: 'Attractions',
       food: 'Food',
@@ -40,10 +45,11 @@ export const translations = {
     reviews: 'reviews',
     km: 'km',
     m: 'm',
+    loadingMore: 'Loading more...',
   },
   ja: {
     welcome: 'ようこそ',
-    appName: 'Spot Go Explore',
+    appName: 'GO! SPOT',
     selectLanguage: '言語を選択してください',
     continue: '続ける',
     locationPermission: '位置情報を有効にする',
@@ -51,7 +57,7 @@ export const translations = {
     enable: '位置情報を有効にする',
     mapView: '地図',
     listView: 'リスト',
-    nearbySpots: '近くのスポット',
+    nearbySpots: 'GO! SPOT',
     loading: '読み込み中...',
     noSpotsFound: '近くにスポットが見つかりません',
     details: '詳細',
@@ -70,6 +76,11 @@ export const translations = {
     close: '閉じる',
     search: '検索',
     filter: 'フィルター',
+    address: '住所',
+    error: 'エラー',
+    cannotOpenMaps: '地図を開けません',
+    cannotMakeCall: '電話をかけられません',
+    cannotOpenWebsite: 'ウェブサイトを開けません',
     categories: {
       attraction: '観光名所',
       food: 'グルメ',
@@ -82,6 +93,7 @@ export const translations = {
     reviews: 'レビュー',
     km: 'km',
     m: 'm',
+    loadingMore: 'さらに読み込み中...',
   },
 };
 

@@ -16,15 +16,34 @@ import { t, Language } from '@/utils/translations';
 interface SpotsListProps {
   spots: TouristSpot[];
   loading: boolean;
+  loadingMore?: boolean;
   language: Language;
   onSpotSelect: (spot: TouristSpot) => void;
+  onLoadMore?: () => void;
+  hasMore?: boolean;
+  selectedRadius?: number;
+  onRadiusChange?: (radius: number) => void;
 }
+
+const RADIUS_OPTIONS = [
+  { value: 1000, label: '1km' },
+  { value: 10000, label: '10km' },
+  { value: 50000, label: '50km' },
+  { value: 100000, label: '100km' },
+  { value: 300000, label: '300km' },
+  { value: 500000, label: '500km' },
+];
 
 const SpotsList: React.FC<SpotsListProps> = ({
   spots,
   loading,
+  loadingMore = false,
   language,
   onSpotSelect,
+  onLoadMore,
+  hasMore = true,
+  selectedRadius = 1000,
+  onRadiusChange,
 }) => {
   const renderSpotItem = ({ item }: { item: TouristSpot }) => {
     const name = language === 'ja' ? item.nameJa : item.name;
@@ -102,6 +121,54 @@ const SpotsList: React.FC<SpotsListProps> = ({
     );
   }
 
+  const renderFooter = () => {
+    if (!loadingMore) return null;
+    return (
+      <View style={styles.footerLoader}>
+        <ActivityIndicator size="small" color={Colors.primary} />
+        <Text style={styles.footerText}>{t('loadingMore', language)}</Text>
+      </View>
+    );
+  };
+
+  const renderHeader = () => {
+    if (!onRadiusChange) return null;
+    return (
+      <View style={styles.radiusSelector}>
+        <Text style={styles.radiusSelectorTitle}>
+          {language === 'ja' ? '検索範囲' : 'Search Range'}
+        </Text>
+        <View style={styles.radiusOptions}>
+          {RADIUS_OPTIONS.map((option) => (
+            <TouchableOpacity
+              key={option.value}
+              style={[
+                styles.radiusButton,
+                selectedRadius === option.value && styles.radiusButtonActive,
+              ]}
+              onPress={() => onRadiusChange(option.value)}
+            >
+              <Text
+                style={[
+                  styles.radiusButtonText,
+                  selectedRadius === option.value && styles.radiusButtonTextActive,
+                ]}
+              >
+                {option.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+    );
+  };
+
+  const handleEndReached = () => {
+    if (onLoadMore && hasMore && !loadingMore) {
+      onLoadMore();
+    }
+  };
+
   return (
     <FlatList
       data={spots}
@@ -109,6 +176,10 @@ const SpotsList: React.FC<SpotsListProps> = ({
       keyExtractor={(item) => item.id}
       contentContainerStyle={styles.listContent}
       showsVerticalScrollIndicator={false}
+      ListHeaderComponent={renderHeader}
+      ListFooterComponent={renderFooter}
+      onEndReached={handleEndReached}
+      onEndReachedThreshold={0.5}
     />
   );
 };
@@ -210,6 +281,52 @@ const styles = StyleSheet.create({
   distance: {
     fontSize: 14,
     color: Colors.text.secondary,
+  },
+  footerLoader: {
+    paddingVertical: 20,
+    alignItems: 'center',
+  },
+  footerText: {
+    marginTop: 8,
+    fontSize: 14,
+    color: Colors.text.secondary,
+  },
+  radiusSelector: {
+    backgroundColor: Colors.surface,
+    padding: 16,
+    marginBottom: 16,
+    borderRadius: 12,
+  },
+  radiusSelectorTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.text.primary,
+    marginBottom: 12,
+  },
+  radiusOptions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  radiusButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    backgroundColor: Colors.background,
+  },
+  radiusButtonActive: {
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
+  },
+  radiusButtonText: {
+    fontSize: 14,
+    color: Colors.text.primary,
+  },
+  radiusButtonTextActive: {
+    color: 'white',
+    fontWeight: '600',
   },
 });
 

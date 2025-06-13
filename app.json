@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "SpotGoExplore",
-    "slug": "spot-go-explore",
+    "name": "GO! SPOT",
+    "slug": "go-spot",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -16,9 +16,12 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.spotgoexplore.app",
+      "bundleIdentifier": "com.gospot.app",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "This app needs access to location to show nearby tourist spots."
+      },
+      "config": {
+        "googleMapsApiKey": "${EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}"
       }
     },
     "android": {
@@ -30,7 +33,12 @@
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION"
       ],
-      "package": "com.spotgoexplore.app"
+      "package": "com.gospot.app",
+      "config": {
+        "googleMaps": {
+          "apiKey": "${EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
