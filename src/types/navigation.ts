@@ -1,4 +1,4 @@
-import { TouristSpot } from './spot';
+import { TouristSpot } from '@/features/spots/types';
 
 export type RootStackParamList = {
   Home: undefined;

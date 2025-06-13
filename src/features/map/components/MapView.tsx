@@ -4,14 +4,13 @@ import {
   Text,
   StyleSheet,
   ActivityIndicator,
-  TouchableOpacity,
+  Pressable,
 } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import MapView, { Marker, Region } from 'react-native-maps'; // PROVIDER_GOOGLEを削除
 
-import { TouristSpot } from '@/types/spot';
+import { TouristSpot } from '@/features/spots/types';
 import { Colors, CATEGORIES } from '@/constants';
-import { t, Language } from '@/utils/translations';
+import { t, Language } from '@/features/language/utils/translations';
 
 interface MapViewProps {
   userLocation: {
@@ -78,7 +77,7 @@ const SpotMapView: React.FC<MapViewProps> = ({
       <MapView
         ref={mapRef}
         style={styles.map}
-        provider={PROVIDER_GOOGLE}
+        // provider={PROVIDER_GOOGLE} を削除してApple Mapsを使用
         initialRegion={initialRegion}
         showsUserLocation
         showsMyLocationButton={false}
@@ -93,23 +92,26 @@ const SpotMapView: React.FC<MapViewProps> = ({
               styles.markerContainer,
               { backgroundColor: CATEGORIES[spot.category].color }
             ]}>
-              <MaterialIcons
-                name={CATEGORIES[spot.category].icon as any}
-                size={20}
-                color="white"
-              />
+              <Text style={styles.markerIcon}>
+                {spot.category === 'attraction' ? '📸' :
+                 spot.category === 'food' ? '🍽️' :
+                 spot.category === 'shopping' ? '🛍️' :
+                 spot.category === 'nature' ? '🌳' : '🏛️'}
+              </Text>
             </View>
           </Marker>
         ))}
       </MapView>
 
-      <TouchableOpacity
-        style={styles.centerButton}
+      <Pressable
+        style={({ pressed }) => [
+          styles.centerButton,
+          pressed && styles.centerButtonPressed,
+        ]}
         onPress={centerOnUser}
-        activeOpacity={0.8}
       >
-        <MaterialIcons name="my-location" size={24} color={Colors.primary} />
-      </TouchableOpacity>
+        <Text style={styles.centerIcon}>📍</Text>
+      </Pressable>
     </View>
   );
 };
@@ -144,6 +146,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
   },
+  markerIcon: {
+    fontSize: 20,
+  },
   centerButton: {
     position: 'absolute',
     bottom: 20,
@@ -159,6 +164,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
+  },
+  centerIcon: {
+    fontSize: 24,
+  },
+  centerButtonPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.95 }],
   },
 });
 

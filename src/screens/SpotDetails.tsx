@@ -16,7 +16,7 @@ import * as Speech from 'expo-speech';
 
 import { RootStackParamList } from '@/types/navigation';
 import { Colors } from '@/constants';
-import { t } from '@/utils/translations';
+import { t } from '@/features/language/utils/translations';
 
 type RouteProps = RouteProp<RootStackParamList, 'SpotDetails'>;
 

@@ -4,17 +4,17 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import MapViewSimple from '@/components/MapViewSimple'; // MapViewSimpleを使用
-import MainHeader from '@/components/MainHeaderSimple';
-import PermissionModal from '@/components/PermissionModalSimple';
-import SpotsList from '@/components/SpotsListSimple';
-import WelcomeScreen from '@/components/WelcomeScreen';
-import LanguageSelector from '@/components/LanguageSelector';
+import MapViewSimple from '@/features/map/components/MapView';
+import MainHeader from '@/features/misc/components/MainHeader';
+import PermissionModal from '@/features/location/components/PermissionModal';
+import SpotsList from '@/features/spots/components/SpotsList';
+import WelcomeScreen from '@/features/misc/components/WelcomeScreen';
+import LanguageSelector from '@/features/language/components/LanguageSelector';
 
-import { useLocationPermission } from '@/hooks/useLocationPermission';
-import { useTouristSpots } from '@/hooks/useTouristSpots';
-import { useLanguage } from '@/hooks/useLanguage';
-import { TouristSpot } from '@/types/spot';
+import { useLocationPermission } from '@/features/location/hooks/useLocationPermission';
+import { useTouristSpots } from '@/features/spots/hooks/useTouristSpots';
+import { useLanguage } from '@/features/language/hooks/useLanguage';
+import { TouristSpot } from '@/features/spots/types';
 import { RootStackParamList } from '@/types/navigation';
 import { Colors } from '@/constants';
 

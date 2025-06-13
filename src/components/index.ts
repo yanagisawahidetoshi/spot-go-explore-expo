@@ -1,6 +1,7 @@
-export { default as LanguageSelector } from './LanguageSelector';
-export { default as MainHeader } from './MainHeader';
-export { default as MapView } from './MapView';
-export { default as PermissionModal } from './PermissionModal';
-export { default as SpotsList } from './SpotsList';
-export { default as WelcomeScreen } from './WelcomeScreen';
+// Re-export components from features
+export { default as LanguageSelector } from '@/features/language/components/LanguageSelector';
+export { default as MainHeader } from '@/features/misc/components/MainHeader';
+export { default as MapView } from '@/features/map/components/MapView';
+export { default as PermissionModal } from '@/features/location/components/PermissionModal';
+export { default as SpotsList } from '@/features/spots/components/SpotsList';
+export { default as WelcomeScreen } from '@/features/misc/components/WelcomeScreen';

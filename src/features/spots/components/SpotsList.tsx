@@ -9,9 +9,9 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
-import { TouristSpot } from '@/types/spot';
+import { TouristSpot } from '../types';
 import { Colors, CATEGORIES } from '@/constants';
-import { t, Language } from '@/utils/translations';
+import { t, Language } from '@/features/language/utils/translations';
 
 interface SpotsListProps {
   spots: TouristSpot[];

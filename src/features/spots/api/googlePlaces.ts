@@ -1,4 +1,4 @@
-import { TouristSpot } from '@/types/spot';
+import { TouristSpot } from '../types';
 import { WikipediaService } from './wikipedia';
 
 const GOOGLE_PLACES_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
