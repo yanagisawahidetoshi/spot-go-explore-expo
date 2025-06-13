@@ -6,7 +6,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
+import MapView, { Marker, Region } from 'react-native-maps'; // PROVIDER_GOOGLEを削除
 
 import { TouristSpot } from '@/types/spot';
 import { Colors, CATEGORIES } from '@/constants';
@@ -77,7 +77,7 @@ const SpotMapView: React.FC<MapViewProps> = ({
       <MapView
         ref={mapRef}
         style={styles.map}
-        provider={PROVIDER_GOOGLE}
+        // provider={PROVIDER_GOOGLE} を削除してApple Mapsを使用
         initialRegion={initialRegion}
         showsUserLocation
         showsMyLocationButton={false}
