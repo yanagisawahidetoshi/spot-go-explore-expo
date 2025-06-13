@@ -4,10 +4,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import MapView from '@/components/MapView';
-import MainHeader from '@/components/MainHeaderSimple'; // 一時的にシンプル版を使用
-import PermissionModal from '@/components/PermissionModalSimple'; // 一時的にシンプル版を使用
-import SpotsList from '@/components/SpotsListSimple'; // 一時的にシンプル版を使用
+import MapViewSimple from '@/components/MapViewSimple'; // MapViewSimpleを使用
+import MainHeader from '@/components/MainHeaderSimple';
+import PermissionModal from '@/components/PermissionModalSimple';
+import SpotsList from '@/components/SpotsListSimple';
 import WelcomeScreen from '@/components/WelcomeScreen';
 import LanguageSelector from '@/components/LanguageSelector';
 
@@ -33,7 +33,7 @@ const Index = () => {
     if (!isLanguageLoading && language === null) {
       setShowLanguageSelector(true);
     }
-  }, [isLanguageLoading, language]);
+  }, [isLanguageLoading, language])];
 
   const handleSpotSelect = (spot: TouristSpot) => {
     navigation.navigate('SpotDetails', { spot, language });
@@ -67,7 +67,7 @@ const Index = () => {
       <View style={styles.content}>
         {hasPermission && userLocation ? (
           isMapView ? (
-            <MapView 
+            <MapViewSimple 
               userLocation={userLocation}
               spots={spots}
               loading={loading}
