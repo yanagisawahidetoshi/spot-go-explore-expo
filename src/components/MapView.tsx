@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
-import { MaterialIcons } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 import { TouristSpot } from '@/types/spot';
 import { Colors, CATEGORIES } from '@/constants';
