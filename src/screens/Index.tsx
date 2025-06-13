@@ -33,7 +33,7 @@ const Index = () => {
     if (!isLanguageLoading && language === null) {
       setShowLanguageSelector(true);
     }
-  }, [isLanguageLoading, language])];
+  }, [isLanguageLoading, language]); // 修正: 余分な ] を削除
 
   const handleSpotSelect = (spot: TouristSpot) => {
     navigation.navigate('SpotDetails', { spot, language });
