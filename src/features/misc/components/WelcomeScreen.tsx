@@ -6,7 +6,7 @@ import {
   Image,
 } from 'react-native';
 import { Colors } from '@/constants';
-import { t, Language } from '@/utils/translations';
+import { t, Language } from '@/features/language/utils/translations';
 
 interface WelcomeScreenProps {
   language: Language;

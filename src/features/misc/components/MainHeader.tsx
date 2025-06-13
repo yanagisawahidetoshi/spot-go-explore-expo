@@ -2,13 +2,11 @@ import React from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
 } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Colors } from '@/constants';
-import { t, Language } from '@/utils/translations';
+import { t, Language } from '@/features/language/utils/translations';
 
 interface MainHeaderProps {
   isMapView: boolean;
@@ -28,29 +26,27 @@ const MainHeader: React.FC<MainHeaderProps> = ({
       <Text style={styles.title}>{t('nearbySpots', language)}</Text>
       
       <View style={styles.actions}>
-        <TouchableOpacity
-          style={styles.iconButton}
+        <Pressable
+          style={({ pressed }) => [
+            styles.iconButton,
+            pressed && styles.iconButtonPressed,
+          ]}
           onPress={onToggleView}
-          activeOpacity={0.7}
         >
-          <MaterialIcons
-            name={isMapView ? 'list' : 'map'}
-            size={24}
-            color={Colors.text.primary}
-          />
-        </TouchableOpacity>
+          <Text style={styles.buttonText}>
+            {isMapView ? '📋' : '🗺️'}
+          </Text>
+        </Pressable>
         
-        <TouchableOpacity
-          style={styles.iconButton}
+        <Pressable
+          style={({ pressed }) => [
+            styles.iconButton,
+            pressed && styles.iconButtonPressed,
+          ]}
           onPress={onShowLanguageSelector}
-          activeOpacity={0.7}
         >
-          <Ionicons
-            name="language"
-            size={24}
-            color={Colors.text.primary}
-          />
-        </TouchableOpacity>
+          <Text style={styles.buttonText}>🌐</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -83,6 +79,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  buttonText: {
+    fontSize: 20,
+  },
+  iconButtonPressed: {
+    opacity: 0.7,
+    transform: [{ scale: 0.95 }],
   },
 });
 

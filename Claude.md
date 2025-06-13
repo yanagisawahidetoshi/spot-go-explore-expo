@@ -57,34 +57,93 @@
 
 ## プロジェクト構造
 
+### Bulletproof React アーキテクチャ
+
+本プロジェクトは[Bulletproof React](https://github.com/alan2207/bulletproof-react)の設計思想に基づいて構築されています。
+
+#### 設計原則
+
+1. **機能別モジュール構造**
+   - 機能ごとに独立したディレクトリで管理
+   - 各機能が自己完結し、高い凝集性を保つ
+   - 機能間の結合度を最小限に抑える
+
+2. **単方向の依存関係**
+   - shared → features → app の方向でのみ依存を許可
+   - 循環依存を防ぎ、コードベースの予測可能性を向上
+
+3. **明確な責務分離**
+   - components: UIの表示に関する責務
+   - hooks: ビジネスロジックとステート管理
+   - api: 外部サービスとの通信
+   - types: 型定義
+   - utils: 汎用的なユーティリティ関数
+
+#### ディレクトリ構造
+
 ```
 src/
-├── components/
-│   ├── LanguageSelector.tsx
-│   ├── MainHeaderSimple.tsx
-│   ├── MapViewSimple.tsx
-│   ├── PermissionModalSimple.tsx
-│   ├── SpotsListSimple.tsx
-│   └── WelcomeScreen.tsx
-├── constants/
+├── config/              # アプリケーション設定
+│   └── index.ts        # 設定値の定義
+├── constants/          # 定数定義
 │   └── index.ts
-├── hooks/
-│   ├── useLanguage.ts
-│   ├── useLocationPermission.ts
-│   └── useTouristSpots.ts
-├── screens/
+├── features/           # 機能別モジュール
+│   ├── spots/          # スポット関連機能
+│   │   ├── api/        # API通信層
+│   │   ├── components/ # UIコンポーネント
+│   │   ├── hooks/      # カスタムフック
+│   │   ├── types/      # 型定義
+│   │   └── index.ts    # 公開エクスポート
+│   ├── language/       # 言語設定機能
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── utils/
+│   │   └── index.ts
+│   ├── location/       # 位置情報機能
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── utils/
+│   │   └── index.ts
+│   ├── map/            # 地図表示機能
+│   │   ├── components/
+│   │   └── index.ts
+│   ├── audio/          # 音声再生機能
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   └── index.ts
+│   └── misc/           # その他の機能
+│       ├── components/
+│       └── index.ts
+├── lib/                # 外部ライブラリの設定
+├── providers/          # コンテキストプロバイダー
+├── routes/             # ルーティング設定
+│   └── index.tsx
+├── screens/            # 画面コンポーネント
 │   ├── Index.tsx
 │   └── SpotDetails.tsx
-├── services/
-│   ├── googlePlaces.ts
-│   └── wikipedia.ts
-├── types/
-│   ├── navigation.ts
-│   └── spot.ts
-└── utils/
-    ├── location.ts
-    ├── storage.ts
-    └── translations.ts
+├── test/               # テスト関連
+└── types/              # グローバル型定義
+    └── navigation.ts
+```
+
+#### インポートルール
+
+- features内では相対パスを使用
+- features間の参照は絶対パス（@/features/...）を使用
+- 循環依存を防ぐため、featuresは他のfeaturesに依存可能だが、単方向性を保つ
+
+#### 各featureの構成
+
+各featureディレクトリは以下の構成を持つ：
+
+```
+feature-name/
+├── api/         # API通信層（該当する場合）
+├── components/  # UIコンポーネント
+├── hooks/       # カスタムフック
+├── types/       # 型定義
+├── utils/       # ユーティリティ関数
+└── index.ts     # 公開API（エクスポート）
 ```
 
 ## 環境設定

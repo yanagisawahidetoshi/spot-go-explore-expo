@@ -1,4 +1,4 @@
-import { TouristSpot } from '@/types/spot';
+import { TouristSpot } from '@/features/spots/types';
 
 export const calculateDistance = (
   lat1: number,

@@ -2,13 +2,12 @@ import React from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   Modal,
   StyleSheet,
 } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { Colors } from '@/constants';
-import { t, Language } from '@/utils/translations';
+import { t, Language } from '@/features/language/utils/translations';
 
 interface PermissionModalProps {
   language: Language;
@@ -28,7 +27,7 @@ const PermissionModal: React.FC<PermissionModalProps> = ({
       <View style={styles.container}>
         <View style={styles.content}>
           <View style={styles.iconContainer}>
-            <Ionicons name="location" size={60} color={Colors.primary} />
+            <Text style={styles.icon}>📍</Text>
           </View>
           
           <Text style={styles.title}>{t('locationPermission', language)}</Text>
@@ -36,13 +35,15 @@ const PermissionModal: React.FC<PermissionModalProps> = ({
             {t('locationPermissionDesc', language)}
           </Text>
           
-          <TouchableOpacity
-            style={styles.button}
+          <Pressable
+            style={({ pressed }) => [
+              styles.button,
+              pressed && styles.buttonPressed,
+            ]}
             onPress={onRequestPermission}
-            activeOpacity={0.8}
           >
             <Text style={styles.buttonText}>{t('enable', language)}</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
     </Modal>
@@ -73,6 +74,9 @@ const styles = StyleSheet.create({
   iconContainer: {
     marginBottom: 24,
   },
+  icon: {
+    fontSize: 60,
+  },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
@@ -99,6 +103,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  buttonPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.98 }],
   },
 });
 

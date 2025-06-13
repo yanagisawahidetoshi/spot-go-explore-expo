@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { TouristSpot } from '@/types/spot';
-import { sortSpotsByDistance } from '@/utils/location';
-import { GooglePlacesService } from '@/services/googlePlaces';
-import { useLanguage } from './useLanguage';
+import { TouristSpot } from '../types';
+import { sortSpotsByDistance } from '@/features/location/utils/location';
+import { GooglePlacesService } from '../api/googlePlaces';
+import { useLanguage } from '@/features/language/hooks/useLanguage';
 
 // フォールバック用のモックデータ（歴史情報付き）
 const MOCK_SPOTS: TouristSpot[] = [

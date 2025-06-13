@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Language } from '@/utils/translations';
+import { Language } from '../utils/translations';
 
 const LANGUAGE_KEY = '@spot-go-explore:language';
 
