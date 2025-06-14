@@ -3,7 +3,7 @@
  * Wikipedia、Wikimedia Commons、Wikidataの統合デモ
  */
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   Alert,
+  Animated,
 } from 'react-native';
 import { EnhancedWikiService, EnhancedSpotInfo } from '@/features/spots/api/enhancedWikiService';
 
@@ -27,6 +28,15 @@ export const WikiPOCDemo: React.FC<WikiPOCDemoProps> = ({ initialSearchQuery }) 
   const [spotInfo, setSpotInfo] = useState<EnhancedSpotInfo | null>(null);
   const [audioScript, setAudioScript] = useState<string>('');
   const [expandedWikiText, setExpandedWikiText] = useState(false);
+  const animatedHeight = useRef(new Animated.Value(400)).current;
+
+  useEffect(() => {
+    Animated.timing(animatedHeight, {
+      toValue: expandedWikiText ? 800 : 400,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  }, [expandedWikiText]);
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
@@ -156,16 +166,16 @@ export const WikiPOCDemo: React.FC<WikiPOCDemoProps> = ({ initialSearchQuery }) 
               <Text style={styles.debugInfo}>
                 取得文字数: {spotInfo.wikipedia.extract.length}文字
               </Text>
-              <View style={styles.wikiExtractContainer}>
+              <Animated.View style={[styles.wikiExtractContainer, { maxHeight: animatedHeight }]}>
                 <ScrollView nestedScrollEnabled={true}>
                   <Text style={styles.wikiExtract}>
                     {(() => {
                       const extract = spotInfo.wikipedia.extract;
                       if (expandedWikiText) {
-                        // 展開時は段階的に表示（5000文字ずつ）
-                        const maxLength = Math.min(extract.length, 5000);
+                        // 展開時は10000文字まで表示
+                        const maxLength = Math.min(extract.length, 10000);
                         return extract.substring(0, maxLength) + 
-                          (extract.length > 5000 ? '\n\n... (全文を表示するにはさらに大きなデータです)' : '');
+                          (extract.length > 10000 ? '\n\n... (さらに続きがあります)' : '');
                       } else {
                         // 未展開時は1000文字
                         return extract.substring(0, 1000) + 
@@ -174,7 +184,7 @@ export const WikiPOCDemo: React.FC<WikiPOCDemoProps> = ({ initialSearchQuery }) 
                     })()}
                   </Text>
                 </ScrollView>
-              </View>
+              </Animated.View>
               {spotInfo.wikipedia.extract.length > 1000 && (
                 <TouchableOpacity 
                   style={styles.readMoreButton}
@@ -366,7 +376,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   wikiExtractContainer: {
-    maxHeight: 400,
     marginTop: 5,
   },
   wikiExtract: {
