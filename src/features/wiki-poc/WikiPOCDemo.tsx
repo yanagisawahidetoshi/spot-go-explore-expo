@@ -46,6 +46,16 @@ export const WikiPOCDemo: React.FC<WikiPOCDemoProps> = ({ initialSearchQuery }) 
       );
       
       setSpotInfo(info);
+      
+      // デバッグ用ログ
+      console.log('SpotInfo:', {
+        name: info.name,
+        hasDescription: !!info.description,
+        descriptionLength: info.description?.length,
+        hasWikipediaExtract: !!info.wikipedia.extract,
+        extractLength: info.wikipedia.extract?.length,
+        extractPreview: info.wikipedia.extract?.substring(0, 100)
+      });
 
       // 音声ガイドスクリプトを生成
       const script = EnhancedWikiService.generateAudioGuideScript(info, '90s');
@@ -100,10 +110,10 @@ export const WikiPOCDemo: React.FC<WikiPOCDemoProps> = ({ initialSearchQuery }) 
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>基本情報</Text>
             <Text style={styles.spotName}>{spotInfo.name}</Text>
-            {/* 概要を表示 */}
-            {spotInfo.wikipedia.extract && (
-              <Text style={styles.description}>
-                {(() => {
+            {/* 概要を表示：descriptionまたはwikipedia.extractの最初の部分 */}
+            <Text style={styles.description}>
+              {(() => {
+                if (spotInfo.wikipedia.extract) {
                   const lines = spotInfo.wikipedia.extract.split('\n');
                   // 【概要】セクションを探す
                   const overviewIndex = lines.findIndex(line => line.includes('【概要】'));
@@ -111,10 +121,12 @@ export const WikiPOCDemo: React.FC<WikiPOCDemoProps> = ({ initialSearchQuery }) 
                     return lines[overviewIndex + 1];
                   }
                   // 【概要】がなければ最初の段落を使用
-                  return lines.find(line => line.trim() && !line.includes('【')) || spotInfo.description;
-                })()}
-              </Text>
-            )}
+                  return lines.find(line => line.trim() && !line.includes('【')) || spotInfo.description || '';
+                }
+                // wikipedia.extractがない場合はdescriptionを使用
+                return spotInfo.description || '説明がありません';
+              })()}
+            </Text>
           </View>
 
           {/* 構造化データ（Wikidata） */}
