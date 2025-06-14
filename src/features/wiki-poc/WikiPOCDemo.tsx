@@ -110,23 +110,11 @@ export const WikiPOCDemo: React.FC<WikiPOCDemoProps> = ({ initialSearchQuery }) 
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>基本情報</Text>
             <Text style={styles.spotName}>{spotInfo.name}</Text>
-            {/* 概要を表示：descriptionまたはwikipedia.extractの最初の部分 */}
-            <Text style={styles.description}>
-              {(() => {
-                if (spotInfo.wikipedia.extract) {
-                  const lines = spotInfo.wikipedia.extract.split('\n');
-                  // 【概要】セクションを探す
-                  const overviewIndex = lines.findIndex(line => line.includes('【概要】'));
-                  if (overviewIndex !== -1 && lines[overviewIndex + 1]) {
-                    return lines[overviewIndex + 1];
-                  }
-                  // 【概要】がなければ最初の段落を使用
-                  return lines.find(line => line.trim() && !line.includes('【')) || spotInfo.description || '';
-                }
-                // wikipedia.extractがない場合はdescriptionを使用
-                return spotInfo.description || '説明がありません';
-              })()}
-            </Text>
+            {spotInfo.description && (
+              <Text style={styles.description}>
+                {spotInfo.description}
+              </Text>
+            )}
           </View>
 
           {/* 構造化データ（Wikidata） */}
@@ -168,43 +156,9 @@ export const WikiPOCDemo: React.FC<WikiPOCDemoProps> = ({ initialSearchQuery }) 
               <Text style={styles.debugInfo}>
                 取得文字数: {spotInfo.wikipedia.extract.length}文字
               </Text>
-              {/* 【概要】セクションを除いた詳細情報を表示 */}
               <ScrollView style={styles.wikiExtractContainer}>
                 <Text style={styles.wikiExtract}>
-                  {(() => {
-                    const lines = spotInfo.wikipedia.extract.split('\n');
-                    let skipNext = false;
-                    let inOverviewSection = false;
-                    
-                    const filtered = lines.filter((line, index) => {
-                      // 【概要】セクションの開始
-                      if (line.includes('【概要】')) {
-                        inOverviewSection = true;
-                        return false;
-                      }
-                      
-                      // 次のセクションが始まったらフラグをリセット
-                      if (inOverviewSection && line.includes('【') && !line.includes('【概要】')) {
-                        inOverviewSection = false;
-                        return true;
-                      }
-                      
-                      // 概要セクション内のコンテンツはスキップ
-                      if (inOverviewSection) {
-                        return false;
-                      }
-                      
-                      return true;
-                    });
-                    
-                    console.log('フィルター結果:', {
-                      元の行数: lines.length,
-                      フィルター後の行数: filtered.length,
-                      フィルター後の文字数: filtered.join('\n').length
-                    });
-                    
-                    return filtered.join('\n').trim() || '表示するコンテンツがありません';
-                  })()}
+                  {spotInfo.wikipedia.extract}
                 </Text>
               </ScrollView>
               {spotInfo.wikipedia.url && (
