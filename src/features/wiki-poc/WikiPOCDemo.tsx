@@ -26,6 +26,7 @@ export const WikiPOCDemo: React.FC<WikiPOCDemoProps> = ({ initialSearchQuery }) 
   const [loading, setLoading] = useState(false);
   const [spotInfo, setSpotInfo] = useState<EnhancedSpotInfo | null>(null);
   const [audioScript, setAudioScript] = useState<string>('');
+  const [expandedWikiText, setExpandedWikiText] = useState(false);
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
@@ -36,6 +37,7 @@ export const WikiPOCDemo: React.FC<WikiPOCDemoProps> = ({ initialSearchQuery }) 
     setLoading(true);
     setSpotInfo(null);
     setAudioScript('');
+    setExpandedWikiText(false); // 展開状態をリセット
 
     try {
       // 統合情報を取得
@@ -157,12 +159,32 @@ export const WikiPOCDemo: React.FC<WikiPOCDemoProps> = ({ initialSearchQuery }) 
               <View style={styles.wikiExtractContainer}>
                 <ScrollView nestedScrollEnabled={true}>
                   <Text style={styles.wikiExtract}>
-                    {/* デバッグ用：最初の1000文字だけ表示 */}
-                    {spotInfo.wikipedia.extract.substring(0, 1000)}
-                    {spotInfo.wikipedia.extract.length > 1000 && '\n\n... (続きがあります)'}
+                    {(() => {
+                      const extract = spotInfo.wikipedia.extract;
+                      if (expandedWikiText) {
+                        // 展開時は段階的に表示（5000文字ずつ）
+                        const maxLength = Math.min(extract.length, 5000);
+                        return extract.substring(0, maxLength) + 
+                          (extract.length > 5000 ? '\n\n... (全文を表示するにはさらに大きなデータです)' : '');
+                      } else {
+                        // 未展開時は1000文字
+                        return extract.substring(0, 1000) + 
+                          (extract.length > 1000 ? '...' : '');
+                      }
+                    })()}
                   </Text>
                 </ScrollView>
               </View>
+              {spotInfo.wikipedia.extract.length > 1000 && (
+                <TouchableOpacity 
+                  style={styles.readMoreButton}
+                  onPress={() => setExpandedWikiText(!expandedWikiText)}
+                >
+                  <Text style={styles.readMoreButtonText}>
+                    {expandedWikiText ? '▲ 閉じる' : '▼ もっと読む'}
+                  </Text>
+                </TouchableOpacity>
+              )}
               {spotInfo.wikipedia.url && (
                 <Text style={styles.wikiLink}>
                   🔗 {spotInfo.wikipedia.url}
@@ -356,6 +378,18 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#007AFF',
     marginTop: 10,
+  },
+  readMoreButton: {
+    alignItems: 'center',
+    paddingVertical: 10,
+    marginTop: 5,
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
+  },
+  readMoreButtonText: {
+    color: '#007AFF',
+    fontSize: 14,
+    fontWeight: '600',
   },
   imageContainer: {
     marginRight: 10,
