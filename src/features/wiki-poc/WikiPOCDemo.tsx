@@ -110,11 +110,9 @@ export const WikiPOCDemo: React.FC<WikiPOCDemoProps> = ({ initialSearchQuery }) 
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>基本情報</Text>
             <Text style={styles.spotName}>{spotInfo.name}</Text>
-            {spotInfo.description && (
-              <Text style={styles.description}>
-                {spotInfo.description}
-              </Text>
-            )}
+            <Text style={styles.description}>
+              {spotInfo.description || 'このスポットの基本情報です。'}
+            </Text>
           </View>
 
           {/* 構造化データ（Wikidata） */}
@@ -150,17 +148,21 @@ export const WikiPOCDemo: React.FC<WikiPOCDemoProps> = ({ initialSearchQuery }) 
           )}
 
           {/* Wikipedia情報 */}
-          {spotInfo.wikipedia.extract && (
+          {spotInfo.wikipedia.extract && spotInfo.wikipedia.extract.length > 0 && (
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Wikipedia情報</Text>
               <Text style={styles.debugInfo}>
                 取得文字数: {spotInfo.wikipedia.extract.length}文字
               </Text>
-              <ScrollView style={styles.wikiExtractContainer}>
-                <Text style={styles.wikiExtract}>
-                  {spotInfo.wikipedia.extract}
-                </Text>
-              </ScrollView>
+              <View style={styles.wikiExtractContainer}>
+                <ScrollView nestedScrollEnabled={true}>
+                  <Text style={styles.wikiExtract}>
+                    {/* デバッグ用：最初の1000文字だけ表示 */}
+                    {spotInfo.wikipedia.extract.substring(0, 1000)}
+                    {spotInfo.wikipedia.extract.length > 1000 && '\n\n... (続きがあります)'}
+                  </Text>
+                </ScrollView>
+              </View>
               {spotInfo.wikipedia.url && (
                 <Text style={styles.wikiLink}>
                   🔗 {spotInfo.wikipedia.url}
