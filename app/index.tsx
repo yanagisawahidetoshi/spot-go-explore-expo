@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert, Button } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import MapViewSimple from '@/features/map/components/MapView';
+import SpotMapView from '@/features/map/components/MapView';
 import MainHeader from '@/features/misc/components/MainHeader';
 import PermissionModal from '@/features/location/components/PermissionModal';
 import SpotsList from '@/features/spots/components/SpotsList';
 import WelcomeScreen from '@/features/misc/components/WelcomeScreen';
 import LanguageSelector from '@/features/language/components/LanguageSelector';
+import { WikiPOCDemo } from '@/features/wiki-poc/WikiPOCDemo';
 
 import { useLocationPermission } from '@/features/location/hooks/useLocationPermission';
 import { useTouristSpots } from '@/features/spots/hooks/useTouristSpots';
@@ -18,6 +19,7 @@ import { Colors } from '@/constants';
 const Index = () => {
   const [isMapView, setIsMapView] = useState(true);
   const [showLanguageSelector, setShowLanguageSelector] = useState(false);
+  const [showWikiPOC, setShowWikiPOC] = useState(false);
   
   const { hasPermission, requestPermission, userLocation } = useLocationPermission();
   const { spots, loading } = useTouristSpots(userLocation);
@@ -39,8 +41,14 @@ const Index = () => {
         { 
           text: '経路案内', 
           onPress: () => {
-            // 後で実装: 地図アプリを開く
             Alert.alert('経路案内', '地図アプリを開く機能は後で実装します');
+          }
+        },
+        {
+          text: 'Wiki情報を見る',
+          onPress: () => {
+            // Wiki POCを表示（スポット名を渡す）
+            setShowWikiPOC(spot.name);
           }
         }
       ]
@@ -56,6 +64,18 @@ const Index = () => {
     return <LanguageSelector onLanguageSelect={handleLanguageSelect} />;
   }
 
+  // Wiki POCを表示
+  if (showWikiPOC) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.pocHeader}>
+          <Button title="← 戻る" onPress={() => setShowWikiPOC(false)} />
+        </View>
+        <WikiPOCDemo initialSearchQuery={typeof showWikiPOC === 'string' ? showWikiPOC : undefined} />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <MainHeader
@@ -64,6 +84,15 @@ const Index = () => {
         onShowLanguageSelector={() => setShowLanguageSelector(true)}
         language={language}
       />
+
+      {/* Wiki POCボタン */}
+      <View style={styles.pocButtonContainer}>
+        <Button 
+          title="🔍 Wiki統合POCを試す" 
+          onPress={() => setShowWikiPOC(true)} 
+          color="#FF6B6B"
+        />
+      </View>
 
       {!hasPermission && (
         <PermissionModal
@@ -75,7 +104,7 @@ const Index = () => {
       <View style={styles.content}>
         {hasPermission && userLocation ? (
           isMapView ? (
-            <MapViewSimple 
+            <SpotMapView 
               userLocation={userLocation}
               spots={spots}
               loading={loading}
@@ -105,6 +134,18 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+  },
+  pocButtonContainer: {
+    padding: 10,
+    backgroundColor: Colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  pocHeader: {
+    padding: 10,
+    backgroundColor: Colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
   },
 });
 
