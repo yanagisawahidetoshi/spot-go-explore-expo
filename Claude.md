@@ -188,6 +188,89 @@ EXPO_PUBLIC_GOOGLE_MAPS_API_KEY=your_api_key_here
 </Pressable>
 ```
 
+**Props名の統一**
+
+- すべてのコンポーネントのProps interfaceは「Props」で統一すること
+- 具体的なコンポーネント名を含む命名は禁止
+
+例：
+```tsx
+// ✅ 正しい
+interface Props {
+  title: string;
+  onPress: () => void;
+}
+
+const MyComponent: React.FC<Props> = ({ title, onPress }) => {
+  // ...
+};
+
+// ❌ 間違い
+interface MyComponentProps {
+  title: string;
+  onPress: () => void;
+}
+```
+
+**expo-imageを使用すること**
+
+- React NativeのImageコンポーネントは使用禁止
+- すべての画像表示はexpo-imageのImageコンポーネントを使用
+- resizeModeの代わりにcontentFitを使用
+
+例：
+```tsx
+// ✅ 正しい
+import { Image } from 'expo-image';
+
+<Image
+  source={{ uri: imageUrl }}
+  style={styles.image}
+  contentFit="cover"
+/>
+
+// ❌ 間違い
+import { Image } from 'react-native';
+
+<Image
+  source={{ uri: imageUrl }}
+  style={styles.image}
+  resizeMode="cover"
+/>
+```
+
+**expo-routerを使用すること**
+
+- react-navigationは使用禁止
+- すべてのナビゲーションはexpo-routerを使用
+- ファイルベースルーティング（app/ディレクトリ構造）
+- router.push、router.back、useLocalSearchParamsを使用
+
+例：
+```tsx
+// ✅ 正しい
+import { router, useLocalSearchParams } from 'expo-router';
+
+// ナビゲーション
+router.push({
+  pathname: '/spot/[id]',
+  params: { id: spot.id, spotData: JSON.stringify(spot) }
+});
+
+// パラメータ取得
+const params = useLocalSearchParams();
+const { id, spotData } = params;
+
+// 戻る
+router.back();
+
+// ❌ 間違い
+import { useNavigation } from '@react-navigation/native';
+
+const navigation = useNavigation();
+navigation.navigate('SpotDetails', { spot });
+```
+
 ## 実行方法
 
 ```bash

@@ -18,8 +18,8 @@ export const useLanguage = () => {
       if (savedLanguage === 'ja' || savedLanguage === 'en') {
         setLanguage(savedLanguage);
       }
-    } catch (error) {
-      console.error('Error loading language:', error);
+    } catch {
+      // console.error('Error loading language');
     } finally {
       setIsLoading(false);
     }
@@ -29,8 +29,8 @@ export const useLanguage = () => {
     try {
       await AsyncStorage.setItem(LANGUAGE_KEY, newLanguage);
       setLanguage(newLanguage);
-    } catch (error) {
-      console.error('Error saving language:', error);
+    } catch {
+      // console.error('Error saving language');
     }
   };
 

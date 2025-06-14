@@ -11,15 +11,26 @@ jest.mock('react-native-safe-area-context', () => {
   };
 });
 
-// Mock react-navigation
-jest.mock('@react-navigation/native', () => ({
-  useNavigation: () => ({
-    navigate: jest.fn(),
-    goBack: jest.fn(),
+// Mock expo-router
+jest.mock('expo-router', () => ({
+  router: {
+    push: jest.fn(),
+    back: jest.fn(),
+    replace: jest.fn(),
+  },
+  useLocalSearchParams: () => ({
+    id: 'test-id',
+    spotData: JSON.stringify({
+      id: 'test-id',
+      name: 'Test Spot',
+      nameJa: 'テストスポット',
+      // ... other properties
+    }),
+    language: 'en',
   }),
-  useRoute: () => ({
-    params: {},
-  }),
+  Stack: {
+    Screen: ({ children }) => children,
+  },
   useFocusEffect: jest.fn(),
 }));
 
@@ -56,6 +67,14 @@ jest.mock('react-native-maps', () => {
   MapView.Marker = (props) => React.createElement('Marker', props);
   MapView.Circle = (props) => React.createElement('Circle', props);
   return MapView;
+});
+
+// Mock expo-image
+jest.mock('expo-image', () => {
+  const React = require('react');
+  return {
+    Image: (props) => React.createElement('Image', props),
+  };
 });
 
 // Silence the warning: Animated: `useNativeDriver` is not supported

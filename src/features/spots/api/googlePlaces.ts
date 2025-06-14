@@ -77,7 +77,7 @@ const mapGoogleTypeToCategory = (types: string[], primaryType?: string): Tourist
 };
 
 // Google Placeから内部フォーマットに変換（Wikipedia情報付き）
-const convertToTouristSpot = async (place: GooglePlace, language: 'en' | 'ja'): Promise<TouristSpot> => {
+const convertToTouristSpot = async (place: GooglePlace, _language: 'en' | 'ja'): Promise<TouristSpot> => {
   // 写真URLの生成
   const images = place.photos?.slice(0, 3).map(photo => {
     // Places API (New) の写真URL形式
@@ -108,8 +108,8 @@ const convertToTouristSpot = async (place: GooglePlace, language: 'en' | 'ja'): 
     if (wikiInfoEn) {
       historicalInfo = wikiInfoEn;
     }
-  } catch (error) {
-
+  } catch {
+    // Silently fail for Wikipedia requests
   }
   
   // Wikipediaの情報がない場合は、Google Places APIの説明を使用
@@ -150,73 +150,64 @@ const convertToTouristSpot = async (place: GooglePlace, language: 'en' | 'ja'): 
 
 export class GooglePlacesService {
   static async searchNearbyPlaces(params: PlaceSearchParams): Promise<TouristSpot[]> {
-    try {
-      const { latitude, longitude, radius = 1000, language = 'en' } = params;
+    const { latitude, longitude, radius = 1000, language = 'en' } = params;
 
+    // Places API (New) のエンドポイント
+    const url = 'https://places.googleapis.com/v1/places:searchNearby';
 
+    // 観光地系のタイプのみに限定（excludedTypesは使わない）
+    const requestBody = {
+      includedTypes: [
+        'tourist_attraction',  // 観光地
+        'museum',             // 博物館
+        'art_gallery',        // 美術館
+        'park',               // 公園
+        'church',             // 教会
+        'hindu_temple',       // ヒンドゥー寺院
+        'mosque',             // モスク
+        'synagogue',          // シナゴーグ
+        'historical_landmark', // 歴史的建造物
+        'zoo',                // 動物園
+        'aquarium',           // 水族館
+        'amusement_park'      // 遊園地
+      ],
+      maxResultCount: 20,
+      locationRestriction: {
+        circle: {
+          center: {
+            latitude: latitude,
+            longitude: longitude
+          },
+          radius: radius
+        }
+      },
+      languageCode: language === 'ja' ? 'ja' : 'en'
+    };
 
-      // Places API (New) のエンドポイント
-      const url = 'https://places.googleapis.com/v1/places:searchNearby';
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': GOOGLE_PLACES_API_KEY!,
+        'X-Goog-FieldMask': 'places.id,places.name,places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,places.googleMapsUri,places.websiteUri,places.internationalPhoneNumber,places.regularOpeningHours,places.priceLevel,places.photos,places.types,places.primaryType,places.editorialSummary'
+      },
+      body: JSON.stringify(requestBody)
+    });
 
-      // 観光地系のタイプのみに限定（excludedTypesは使わない）
-      const requestBody = {
-        includedTypes: [
-          'tourist_attraction',  // 観光地
-          'museum',             // 博物館
-          'art_gallery',        // 美術館
-          'park',               // 公園
-          'church',             // 教会
-          'hindu_temple',       // ヒンドゥー寺院
-          'mosque',             // モスク
-          'synagogue',          // シナゴーグ
-          'historical_landmark', // 歴史的建造物
-          'zoo',                // 動物園
-          'aquarium',           // 水族館
-          'amusement_park'      // 遊園地
-        ],
-        maxResultCount: 20,
-        locationRestriction: {
-          circle: {
-            center: {
-              latitude: latitude,
-              longitude: longitude
-            },
-            radius: radius
-          }
-        },
-        languageCode: language === 'ja' ? 'ja' : 'en'
-      };
-
-
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Goog-Api-Key': GOOGLE_PLACES_API_KEY!,
-          'X-Goog-FieldMask': 'places.id,places.name,places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,places.googleMapsUri,places.websiteUri,places.internationalPhoneNumber,places.regularOpeningHours,places.priceLevel,places.photos,places.types,places.primaryType,places.editorialSummary'
-        },
-        body: JSON.stringify(requestBody)
-      });
-
-      const responseText = await response.text();
-      
-      if (!response.ok) {
-        throw new Error(`API request failed: ${response.status}`);
-      }
-
-      const data = JSON.parse(responseText);
-      const places: GooglePlace[] = data.places || [];
-      
-      
-      // 各場所について歴史情報も含めて変換（並列処理）
-      const spotsPromises = places.map(place => convertToTouristSpot(place, language));
-      const spots = await Promise.all(spotsPromises);
-
-      return spots;
-    } catch (error) {
-      throw error;
+    const responseText = await response.text();
+    
+    if (!response.ok) {
+      throw new Error(`API request failed: ${response.status}`);
     }
+
+    const data = JSON.parse(responseText);
+    const places: GooglePlace[] = data.places || [];
+    
+    // 各場所について歴史情報も含めて変換（並列処理）
+    const spotsPromises = places.map(place => convertToTouristSpot(place, language));
+    const spots = await Promise.all(spotsPromises);
+
+    return spots;
   }
 
   // 生のGoogle Place情報を取得するメソッド（内部使用）
@@ -239,7 +230,7 @@ export class GooglePlacesService {
 
       const place: GooglePlace = await response.json();
       return place;
-    } catch (error) {
+    } catch {
       return null;
     }
   }
@@ -258,15 +249,12 @@ export class GooglePlacesService {
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-
         throw new Error(`API request failed: ${response.status}`);
       }
 
       const place: GooglePlace = await response.json();
       return await convertToTouristSpot(place, language);
-    } catch (error) {
-
+    } catch {
       return null;
     }
   }

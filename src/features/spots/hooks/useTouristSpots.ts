@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { TouristSpot } from '../types';
 import { sortSpotsByDistance } from '@/features/location/utils/location';
 import { GooglePlacesService } from '../api/googlePlaces';
@@ -48,6 +48,7 @@ const MOCK_SPOTS: TouristSpot[] = [
     price: 'Free',
     priceJa: '無料',
     website: 'https://www.senso-ji.jp',
+    phone: '+81 3-3842-0181',
     features: ['Historical architecture', 'Shopping street', 'Traditional festivals'],
     featuresJa: ['歴史的建築', '仲見世通り', '伝統的なお祭り'],
   },
@@ -64,13 +65,7 @@ export const useTouristSpots = (userLocation: LocationData | null) => {
   const [error, setError] = useState<string | null>(null);
   const { language } = useLanguage();
 
-  useEffect(() => {
-    if (userLocation) {
-      fetchSpots();
-    }
-  }, [userLocation, language]);
-
-  const fetchSpots = async () => {
+  const fetchSpots = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -103,7 +98,7 @@ export const useTouristSpots = (userLocation: LocationData | null) => {
             language: language as 'en' | 'ja'
           });
 
-        } catch (apiError: any) {
+        } catch {
           // APIエラー時はモックデータにフォールバック
           spotsData = MOCK_SPOTS;
           setError('Using sample data due to API error');
@@ -114,7 +109,7 @@ export const useTouristSpots = (userLocation: LocationData | null) => {
       const sortedSpots = sortSpotsByDistance(spotsData, userLocation);
       setSpots(sortedSpots);
       
-    } catch (err) {
+    } catch {
       setError('Failed to fetch tourist spots');
 
       // エラー時もモックデータを表示
@@ -122,7 +117,13 @@ export const useTouristSpots = (userLocation: LocationData | null) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userLocation, language]);
+
+  useEffect(() => {
+    if (userLocation) {
+      fetchSpots();
+    }
+  }, [userLocation, fetchSpots]);
 
   return { spots, loading, error, refetch: fetchSpots };
 };

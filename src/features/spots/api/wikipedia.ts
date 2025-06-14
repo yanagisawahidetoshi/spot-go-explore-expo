@@ -1,11 +1,14 @@
-import { TouristSpot } from '@/types/spot';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { TouristSpot } from '../types';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface WikipediaSearchResult {
   pageid: number;
   title: string;
   extract: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface WikipediaPageContent {
   pageid: number;
   title: string;
@@ -51,13 +54,12 @@ export class WikipediaService {
       // 長すぎる場合は要約
       if (extract.length > 500) {
         // 最初の2-3段落程度に制限
-        const paragraphs = extract.split('\n').filter(p => p.trim());
+        const paragraphs = extract.split('\n').filter((p: string) => p.trim());
         extract = paragraphs.slice(0, 3).join('\n\n');
       }
 
       return extract;
-    } catch (error) {
-
+    } catch {
       return null;
     }
   }

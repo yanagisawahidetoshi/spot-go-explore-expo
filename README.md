@@ -74,6 +74,64 @@ spot-go-explore-expo/
 - React Native Maps
 - AsyncStorage
 
+## Development
+
+### Testing
+
+```bash
+# Run tests
+npm test
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run tests in watch mode
+npm run test:watch
+```
+
+### Linting & Type Checking
+
+```bash
+# Run ESLint
+npm run lint
+
+# Fix ESLint errors automatically
+npm run lint:fix
+
+# Run TypeScript type checking
+npm run typecheck
+
+# Format code with Prettier
+npm run prettier:fix
+```
+
+### CI/CD
+
+This project includes GitHub Actions workflows that automatically:
+
+- Run tests and linting on every pull request
+- Check TypeScript types
+- Test build process
+- Prevent merging if any checks fail
+
+#### Setting up Branch Protection
+
+To enable quality gates on the main branch:
+
+1. Go to your GitHub repository → Settings → Branches
+2. Add a branch protection rule for `main`
+3. Enable the following options:
+   - ✅ Require a pull request before merging
+   - ✅ Require status checks to pass before merging
+   - ✅ Require branches to be up to date before merging
+   - Select required status checks:
+     - `🧪 Tests & Linting`
+     - `🏗️ Build Check`
+     - `🚦 Quality Gate`
+   - ✅ Restrict pushes that create files larger than 100MB
+
+This ensures that all code changes go through proper testing and review before being merged.
+
 ## License
 
 MIT

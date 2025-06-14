@@ -1,0 +1,96 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: 🧪 Tests & Linting
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📦 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: 📥 Install dependencies
+      run: npm ci
+      
+    - name: 🔍 Run TypeScript type checking
+      run: npm run typecheck
+      
+    - name: 🧹 Run ESLint
+      run: npm run lint
+      
+    - name: 🧪 Run tests
+      run: npm test -- --coverage --watchAll=false
+      
+    - name: 📊 Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: false
+        
+    - name: 💾 Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+  build:
+    name: 🏗️ Build Check
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📦 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: 📥 Install dependencies
+      run: npm ci
+      
+    - name: 🏗️ Test Expo build
+      run: npx expo export --platform web --output-dir web-build
+      
+    - name: ✅ Build successful
+      run: echo "✅ Build completed successfully!"
+
+  quality-gate:
+    name: 🚦 Quality Gate
+    runs-on: ubuntu-latest
+    needs: [test, build]
+    if: always()
+    
+    steps:
+    - name: 🔍 Check job results
+      run: |
+        if [[ "${{ needs.test.result }}" != "success" ]]; then
+          echo "❌ テストまたはリントが失敗しました。詳細を確認してください。"
+          echo "❌ Tests or linting failed. Please check the details above."
+          exit 1
+        fi
+        
+        if [[ "${{ needs.build.result }}" != "success" ]]; then
+          echo "❌ ビルドが失敗しました。詳細を確認してください。"
+          echo "❌ Build failed. Please check the details above."
+          exit 1
+        fi
+        
+        echo "✅ すべてのチェックが成功しました！マージ可能です。"
+        echo "✅ All checks passed! Ready to merge."
