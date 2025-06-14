@@ -174,23 +174,36 @@ export const WikiPOCDemo: React.FC<WikiPOCDemoProps> = ({ initialSearchQuery }) 
                   {(() => {
                     const lines = spotInfo.wikipedia.extract.split('\n');
                     let skipNext = false;
+                    let inOverviewSection = false;
                     
-                    return lines
-                      .filter((line, index) => {
-                        // 【概要】セクションとその内容をスキップ
-                        if (line.includes('【概要】')) {
-                          skipNext = true;
-                          return false;
-                        }
-                        if (skipNext && line.trim() && !line.includes('【')) {
-                          skipNext = false;
-                          return false;
-                        }
-                        skipNext = false;
+                    const filtered = lines.filter((line, index) => {
+                      // 【概要】セクションの開始
+                      if (line.includes('【概要】')) {
+                        inOverviewSection = true;
+                        return false;
+                      }
+                      
+                      // 次のセクションが始まったらフラグをリセット
+                      if (inOverviewSection && line.includes('【') && !line.includes('【概要】')) {
+                        inOverviewSection = false;
                         return true;
-                      })
-                      .join('\n')
-                      .trim();
+                      }
+                      
+                      // 概要セクション内のコンテンツはスキップ
+                      if (inOverviewSection) {
+                        return false;
+                      }
+                      
+                      return true;
+                    });
+                    
+                    console.log('フィルター結果:', {
+                      元の行数: lines.length,
+                      フィルター後の行数: filtered.length,
+                      フィルター後の文字数: filtered.join('\n').length
+                    });
+                    
+                    return filtered.join('\n').trim() || '表示するコンテンツがありません';
                   })()}
                 </Text>
               </ScrollView>
