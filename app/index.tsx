@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
 
 import MapViewSimple from '@/features/map/components/MapView';
 import MainHeader from '@/features/misc/components/MainHeader';
@@ -31,15 +30,21 @@ const Index = () => {
   }, [isLanguageLoading, language]);
 
   const handleSpotSelect = (spot: TouristSpot) => {
-    // expo-routerでは router.push を使用
-    router.push({
-      pathname: '/spot/[id]',
-      params: { 
-        id: spot.id,
-        spotData: JSON.stringify(spot),
-        language 
-      }
-    });
+    // スポットの詳細をアラートで表示（後で詳細画面を実装）
+    Alert.alert(
+      spot.name,
+      `${spot.description}\n\n評価: ${spot.rating}⭐\n距離: ${Math.round(spot.distance)}m`,
+      [
+        { text: 'キャンセル', style: 'cancel' },
+        { 
+          text: '経路案内', 
+          onPress: () => {
+            // 後で実装: 地図アプリを開く
+            Alert.alert('経路案内', '地図アプリを開く機能は後で実装します');
+          }
+        }
+      ]
+    );
   };
 
   const handleLanguageSelect = async (lang: 'en' | 'ja') => {

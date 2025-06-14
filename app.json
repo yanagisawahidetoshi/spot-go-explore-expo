@@ -44,8 +44,7 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-location",
-      "expo-router"
+      "expo-location"
     ],
     "scheme": "go-spot"
   }
